@@ -45,7 +45,18 @@ public class MajorProject extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        launch(args);
+        Index indexObj = new Index();
+        indexObj.indexMain();
+//        contact_us cobj = new contact_us();
+//        cobj.main(args);
+//        Login loginObj = new Login();
+//        loginObj.setVisible(true);
+//    String arg[] = null;
+//        Login.main(arg);
+//        launch(args);
+//        main m = new main();
+//        m.setVisible(true);
+        
     }
     
 }
