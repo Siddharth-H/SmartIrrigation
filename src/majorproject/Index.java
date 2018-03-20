@@ -4,18 +4,52 @@
  * and open the template in the editor.
  */
 package majorproject;
-import javax.swing.UIManager;
+
+import Connection.conn;
+import java.awt.BorderLayout;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.table.DefaultTableModel;
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.jdbc.JDBCXYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
 /**
  *
  * @author User
  */
 public class Index extends javax.swing.JFrame {
 
+    //serial Port instance
+    public static SerialPort serialPort;
+
+    static void main() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    public DefaultTableModel dtm;
+    public static String receivedMessage;
+    String plantWaterReq;
+    String plantMinMoisture;
+    String plantMaxMoisture;
+
     /**
      * Creates new form main
      */
     public Index() {
         initComponents();
+        dtm = (DefaultTableModel) jTable2.getModel();
+        emptyTable(dtm);
     }
 
     /**
@@ -66,7 +100,7 @@ public class Index extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(javax.swing.UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient"));
         setBounds(new java.awt.Rectangle(0, 0, 0, 0));
-        setPreferredSize(new java.awt.Dimension(1920, 1040));
+        setPreferredSize(new java.awt.Dimension(1920, 1078));
         setResizable(false);
         setSize(new java.awt.Dimension(2100, 3000));
 
@@ -154,15 +188,18 @@ public class Index extends javax.swing.JFrame {
         jTable2.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "TIME", "MOISTURE LEVEL (%)", "VALVE STATUS"
             }
         ));
+        jTable2.setIntercellSpacing(new java.awt.Dimension(5, 5));
+        jTable2.setRowHeight(25
+        );
         jScrollPane2.setViewportView(jTable2);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -196,8 +233,8 @@ public class Index extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(42, 42, 42)
                 .addComponent(jLabel2)
-                .addGap(40, 40, 40)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(40, 40, 40)
@@ -338,7 +375,7 @@ public class Index extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(51, 51, 51)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1051, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 137, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -390,58 +427,404 @@ public class Index extends javax.swing.JFrame {
 
     private void jMenu3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MouseClicked
         // TODO add your handling code here:
-       contact_us cus = new contact_us();
-//       String[] x =null;
-       cus.maincs();
+
     }//GEN-LAST:event_jMenu3MouseClicked
- 
-    
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        int i=3;
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Windows".equals(info.getName())) {
-////                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
-////                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(Index.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(Index.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(Index.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(Index.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//        //</editor-fold>
+
+    //Connecting to Database
+    Connection connectToDatabase() {
+        System.out.println("Establishing Connection::");
+        Connection con;
+        try {
+            con = conn.getCon();
+        } catch (Exception e) {
+            System.out.println("Connection can't be established");
+            System.out.println("Error" + e);
+            return null;
+        }
+        return con;
+
+    }
+
+    //Disconnect with Database
+    private void closeConnection(Connection con) {
+        try {
+            con.close();
+        } catch (SQLException e) {
+
+        }
+    }
+
+    //Insert moisture valve in moisture table 
+    void insertIntoMoisture(Connection con, String s) {
+        try {
+            System.out.println("Performing moisture database insertion:: value:: " + s);
+            String query = "insert into moisture(m_value) values(" + s + ")";
+            Statement st = con.createStatement();
+
+            System.out.println("Statement created");
+            int x = st.executeUpdate(query);
+
+            System.out.println("Execute Updated");
+            if (x > 0) {
+                System.out.println("Data saved");
+            } else {
+                System.out.println("Data cant be saved.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Problem in Inserting moisture value in database:: " + e);
+
+        }
+        closeConnection(con);
+    }
+
+    void updateInValve(Connection con, String s) {
+        try {
+            System.out.println("Performing valve database insertion:: value=> " + s);
+            String query = "UPDATE valve SET v_status='" + s + "' WHERE v_id = 1";
+            Statement st = con.createStatement();
+
+            System.out.println("Statement created");
+            int x = st.executeUpdate(query);
+
+            System.out.println("Execute Updated");
+            if (x > 0) {
+                System.out.println("Data saved. Valve");
+            } else {
+                System.out.println("Data cant be saved.Valve");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Problem in Inserting valve value in database:: " + e);
+
+        }
+        closeConnection(con);
+    }
+
+    //Tell Arduino the minimum Moisture Level, maximum moisture level and daily water requirement
+    boolean setMinMoisture() {
+        Connection con = connectToDatabase();
+        System.out.println("Setting Moisture values and water req.");
+        String s = "select p.water_req, min_moisture, max_moisture from plant p where p.plantid IN(select f.plantid from farm f where f.userid = 100 )";
+        try {
+            PreparedStatement ps = con.prepareStatement(s);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                plantWaterReq = rs.getString(1);
+                plantMinMoisture = rs.getString(2);
+                plantMaxMoisture = rs.getString(3);
+
+                /*    serialPort.writeString(waterReq);
+                serialPort.writeString(minMoisture);
+                serialPort.writeString(maxMoisture);
+                
+                System.out.println("water Req = "+waterReq);
+                System.out.println("minMois = "+minMoisture);
+                System.out.println("maxMois = "+maxMoisture);
+                 */
+            }
+        } catch (SQLException e) {
+            System.out.println("Minimum Moisture cant be set:: " + e);
+            return false;
+        }
+        System.out.println("Done Setting Min Moisture");
+        return true;
+
+    }
+
+    //set serial port
+    boolean setSerialPort() {
+
+        String portName = "COM3";
+
+        // writing to port
+        serialPort = new SerialPort(portName);
+        try {
+            // opening port
+            serialPort.openPort();
+
+            serialPort.setParams(SerialPort.BAUDRATE_9600,
+                    SerialPort.DATABITS_8,
+                    SerialPort.STOPBITS_1,
+                    SerialPort.PARITY_NONE, false, false);
+
+            serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+
+            serialPort.addEventListener(new Index.PortReader(), SerialPort.MASK_RXCHAR);
+        } catch (SerialPortException e) {
+            System.out.println("Problem in connecting to the serial port:: " + e);
+            return false;
+        }
+        return true;
+    }
+
+    private void series(String table_time, String table_moisture_percentage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static class PortReader implements SerialPortEventListener {
+
+        @Override
+        public void serialEvent(SerialPortEvent event) {
+            System.out.println("inside Serial Event");
+            if (event.isRXCHAR() && event.getEventValue() > 0) {
+                return;
+            }
+        }
+    }
+
+    //send message to Arduino
+    private void sendMessage(String s) {
+        try {
+            System.out.println("Inside Send mEssage:: msg=" + s);
+            System.out.println("Serial Port :: " + serialPort + " Name: " + serialPort.getPortName());
+
+            serialPort.writeString(s);
+        } catch (SerialPortException e) {
+            System.out.println("Error in sending Message::" + e);
+        }
+    }
+
+    //receive message from Arduino
+    private String receiveMessage() {
+        try {
+            String receivedMessage = null;
+            while (receivedMessage == null) {
+                receivedMessage = serialPort.readString();
+            }
+            return receivedMessage;
+        } catch (SerialPortException e) {
+            System.out.println("Error in receiving Message::" + e);
+            return null;
+        }
+    }
+
+    //Read data for Eternity ;P
+    void startInfiniteLoop() {
+        try {
+
+            Thread t = new Thread() {
+                @Override
+                public void run() {
+                    try {
+
+                        while (true) {
+
+                            int moistureLevel = readMoisture();
+                            String valve = null;
+
+                            if (Integer.parseInt(plantWaterReq) > 0) {
+                                if (moistureLevel < Integer.parseInt(plantMinMoisture)) {
+                                    changeValveState("ON");
+                                    valve = "ON";
+                                }
+
+                                if (moistureLevel >= Integer.parseInt(plantMaxMoisture)) {
+                                    changeValveState("OFF");
+                                    valve = "OFF";
+                                }
+                            }
+
+                            changeValveState("OFF");
+                            insertIntoMoisture(connectToDatabase(), "" + moistureLevel + "");
+                            updateInValve(connectToDatabase(), valve);
+                            emptyTable(dtm);
+                            showSensorTable();
+                            setProgressBar();
+                            createChart();
+                            Thread.sleep(10000);
+
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Error in run Thread :: " + e);
+                    }
+                }
+            };
+            t.start();
+        } catch (Exception e) {
+            System.out.println("Problem in Start infinite loop:: " + e);
+        }
+
+    }
+
+    //Insert into Sensor table
+    private void showSensorTable() {
+        try {
+            String s_select = "select time,m_value from moisture order by moisture.time DESC LIMIT 6";
+            Connection con = connectToDatabase();
+            PreparedStatement ps = con.prepareStatement(s_select);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+
+                String table_time = rs.getString(1);
+                String table_moisture_percentage = rs.getString(2);
+                String table_valve;
+                if (Integer.parseInt(table_moisture_percentage) > Integer.parseInt(plantMaxMoisture)) {
+                    table_valve = "OFF";
+                } else {
+                    table_valve = "ON";
+                }
+
+                Object obj[] = {table_time, table_moisture_percentage, table_valve};
+                dtm.addRow(obj);
+            }
+            jTable2.setModel(dtm);
+            System.out.println("Table Done");
+            closeConnection(con);
+        } catch (Exception e) {
+            System.out.println("Shpw table error ::" + e);
+
+        }
+
+    }
+
+    //empty Table
+    private void emptyTable(DefaultTableModel dtmTemp) {
+        int rowCount = dtmTemp.getRowCount();
+        //Remove rows one by one from the end of the table
+        for (int i = rowCount - 1; i >= 0; i--) {
+            dtmTemp.removeRow(i);
+        }
+    }
+
+    //setProgress Bar to avg mositure sensor rating
+    private void setProgressBar() {
+        try {
+            Connection con = connectToDatabase();
+            String s_progressBar = "select avg(m_value) from moisture";
+            Statement st_pb = con.createStatement();
+            ResultSet rs_pbSet = st_pb.executeQuery(s_progressBar);
+            while (rs_pbSet.next()) {
+                float pg_value = rs_pbSet.getFloat(1);
+                System.out.println("PG value = " + pg_value);
+
+//                            if(pg_value<10){
+//                                pg_value = 49; 
+//                            }
+                jProgressBar1.setStringPainted(true);
+                jProgressBar1.setValue((int) pg_value);
+
+                System.out.println("Progress bar done");
+                connectToDatabase();
+            }
+        } catch (Exception e) {
+            System.out.println("Problem in Progress Bar:: " + e);
+
+        }
+
+    }
+
+    //readMoistureData
+    int readMoisture() {
+        System.out.println("Reading Moisture");
+        sendMessage("readM");
+        String moisture = null;
+        while (moisture == null) {
+            moisture = receiveMessage();
+        }
+        int moistureLevel = Integer.parseInt(moisture);
+        return moistureLevel;
+
+    }
+
+    //change valve state
+    void changeValveState(String state) {
+        sendMessage("cvs");
+        String moisture = null;
+        while (moisture != null) {
+            moisture = receiveMessage();
+        }
+        sendMessage(state);
+    }
+
+    //create Chart in jPanel5
+    void createChart() {
+        try {
+            jPanel5.setLayout(new java.awt.BorderLayout());
+            
+//            XYSeries series = new XYSeries("XYGraph");
+//            String query = "SELECT time(time) FROM moisture order BY time DESC LIMIT 10";
+//            Connection con = connectToDatabase();
+//            PreparedStatement ps = con.prepareStatement(query);
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
 //
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new Index().setVisible(true);
+//                String table_time = rs.getString(1);
+//                String table_moisture_percentage = rs.getString(2);
+//                series(table_time,table_moisture_percentage);
 //            }
-//        });
-//    }
-    
-    
-    
-    
-    
+
+            String query = "SELECT time(time),m_value FROM moisture order BY time DESC LIMIT 10";
+            Connection con = connectToDatabase();
+            
+            
+
+// Add the series to your data set
+            JDBCXYDataset jds = new JDBCXYDataset(con);
+            jds.executeQuery(query);
+            JFreeChart chart = ChartFactory.createTimeSeriesChart("Moisture Level","Time", "Moisture", jds, true, true,false);
+         
+// Generate the graph
+//            JFreeChart chart = ChartFactory.createXYLineChart(
+//                    "XY Chart", // Title
+//                    "x-axis", // x-axis Label
+//                    "y-axis", // y-axis Label
+//                    dataset, // Dataset
+//                    PlotOrientation.VERTICAL, // Plot Orientation
+//                    true, // Show Legend
+//                    true, // Use tooltips
+//                    false // Configure chart to generate URLs?
+//            );
+            ChartPanel CP = new ChartPanel(chart);
+            
+            jPanel5.add(CP, BorderLayout.CENTER);
+            jPanel5.validate();
+
+        } catch (Exception e) {
+            System.out.println("Problem in creating Graph:: " + e);
+        }
+    }
+
+    /**
+     */
+    //    public static void main(String args[]) {
+    //        int i=3;
+    //        /* Set the Nimbus look and feel */
+    //        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+    //        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+    //         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+    //         */
+    //        try {
+    //            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+    //                if ("Windows".equals(info.getName())) {
+    ////                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+    //                    UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
+    ////                    break;
+    //                }
+    //            }
+    //        } catch (ClassNotFoundException ex) {
+    //            java.util.logging.Logger.getLogger(Index.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    //        } catch (InstantiationException ex) {
+    //            java.util.logging.Logger.getLogger(Index.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    //        } catch (IllegalAccessException ex) {
+    //            java.util.logging.Logger.getLogger(Index.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    //        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+    //            java.util.logging.Logger.getLogger(Index.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    //        }
+    //        //</editor-fold>
+    //        //</editor-fold>
+    //
+    //        /* Create and display the form */
+    //        java.awt.EventQueue.invokeLater(new Runnable() {
+    //            public void run() {
+    //                new Index().setVisible(true);
+    //            }
+    //        });
+    //    }
     //My Main method
-    
-       public static void indexMain() {
-        int i=3;
+    public static void mainIndex() {
+        int i = 3;
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -473,6 +856,58 @@ public class Index extends javax.swing.JFrame {
                 new Index().setVisible(true);
             }
         });
+//        Index index = new Index();
+//        index.setSerialPort();
+//        index.setMinMoisture();
+//        try {
+//            Thread t = new Thread() {
+//                @Override
+//                public void run() {
+//                    try {
+//
+//                        while (true) {
+//                            int moistureLevel = index.readMoisture();
+//                            String valve = null;
+//                            if (Integer.parseInt(index.plantWaterReq) > 0) {
+//                                if (moistureLevel < Integer.parseInt(index.plantMinMoisture)) {
+//                                    index.changeValveState("ON");
+//                                    valve = "ON";
+//                                }
+//
+//                                if (moistureLevel >= Integer.parseInt(index.plantMaxMoisture)) {
+//                                    index.changeValveState("OFF");
+//                                    valve = "OFF";
+//                                }
+//                            }
+//                            index.changeValveState("OFF");
+//                            index.insertIntoMoisture(index.connectToDatabase(), "" + moistureLevel + "");
+//                            index.updateInValve(index.connectToDatabase(), valve);
+//                            Thread.sleep(3000);
+//                        }
+//                    } catch (InterruptedException | NumberFormatException e) {
+//                        System.out.println("Problem in Start infinite loop Thread::" + e);
+//                    }
+//                }
+//            };
+//            t.start();
+//        } catch (Exception e) {
+//            System.out.println("Problem in Start infinite loop:: " + e);
+//        }
+
+//        Index index = new Index();
+//        if (index.setSerialPort() && index.setMinMoisture()) {
+//            index.startInfiniteLoop();
+////            try {
+////                Thread t = new Thread() {
+////                    public void run() {
+////
+////                    }
+////                };
+////
+////            } catch (Exception e) {
+////                System.out.println("Index Main ::" + e);
+////            }
+//        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -500,16 +935,16 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
+    private static javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JProgressBar jProgressBar1;
+    private static javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private static javax.swing.JTable jTable2;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
