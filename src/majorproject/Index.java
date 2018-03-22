@@ -20,10 +20,7 @@ import jssc.SerialPortException;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.jdbc.JDBCXYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -42,6 +39,9 @@ public class Index extends javax.swing.JFrame {
     String plantWaterReq;
     String plantMinMoisture;
     String plantMaxMoisture;
+    int presentMoistureLevel;
+    int previousMoistureLevel = 0;
+    int sessionUserId;
 
     /**
      * Creates new form main
@@ -79,7 +79,6 @@ public class Index extends javax.swing.JFrame {
         jPanel7 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jProgressBar1 = new javax.swing.JProgressBar();
@@ -100,9 +99,13 @@ public class Index extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(javax.swing.UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient"));
         setBounds(new java.awt.Rectangle(0, 0, 0, 0));
-        setPreferredSize(new java.awt.Dimension(1920, 1078));
         setResizable(false);
         setSize(new java.awt.Dimension(2100, 3000));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         jTabbedPane1.setBackground(new java.awt.Color(153, 255, 255));
         jTabbedPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -204,13 +207,13 @@ public class Index extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "TIME", "MOISTURE LEVEL", "VALVE STATUS"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -261,24 +264,20 @@ public class Index extends javax.swing.JFrame {
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(32, Short.MAX_VALUE)
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(26, Short.MAX_VALUE)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
-
-        jComboBox1.setFont(new java.awt.Font("Segoe UI Semibold", 0, 24)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Farm 1", "Fram 2" }));
 
         jButton1.setFont(new java.awt.Font("Segoe UI Symbol", 1, 24)); // NOI18N
         jButton1.setText("Show Details");
@@ -289,11 +288,11 @@ public class Index extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 641, Short.MAX_VALUE)
+            .addGap(0, 692, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 371, Short.MAX_VALUE)
+            .addGap(0, 443, Short.MAX_VALUE)
         );
 
         jLabel5.setFont(new java.awt.Font("Segoe UI Semibold", 1, 24)); // NOI18N
@@ -301,6 +300,11 @@ public class Index extends javax.swing.JFrame {
 
         jComboBox2.setFont(new java.awt.Font("Segoe UI Semibold", 1, 24)); // NOI18N
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sensor 1", "Sensor 2" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
 
         jMenuBar1.setBackground(new java.awt.Color(255, 102, 0));
         jMenuBar1.setBorder(null);
@@ -321,6 +325,11 @@ public class Index extends javax.swing.JFrame {
 
         jMenu5.setText("Update User Details");
         jMenu5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jMenu5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu5MouseClicked(evt);
+            }
+        });
         jMenu1.add(jMenu5);
 
         jMenu4.setText("Check User Information");
@@ -348,6 +357,11 @@ public class Index extends javax.swing.JFrame {
 
         jMenu8.setText("Contact Us");
         jMenu8.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jMenu8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu8MouseClicked(evt);
+            }
+        });
         jMenu7.add(jMenu8);
 
         jMenuBar1.add(jMenu7);
@@ -362,6 +376,11 @@ public class Index extends javax.swing.JFrame {
 
         jMenu9.setText("About Us");
         jMenu9.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jMenu9.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu9MouseClicked(evt);
+            }
+        });
         jMenu3.add(jMenu9);
 
         jMenuBar1.add(jMenu3);
@@ -375,51 +394,47 @@ public class Index extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(51, 51, 51)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1051, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 137, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(38, 38, 38))
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(69, 69, 69))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(86, 86, 86))))
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(17, 17, 17)))
+                .addContainerGap(44, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(79, 79, 79)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(54, 54, 54)
+                        .addGap(124, 124, 124)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(62, 62, 62)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(65, 65, 65)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(30, 30, 30))
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 812, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(157, 157, 157))
+                            .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(187, 187, 187))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 812, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
@@ -430,9 +445,61 @@ public class Index extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jMenu3MouseClicked
 
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+//        String username = null;
+//
+//        Connection con = conn.getCon();
+//
+//        String sql = "Select * from users";
+//
+//        PreparedStatement preparedStatement;
+//        try {
+//            preparedStatement = con.prepareStatement(sql);
+//            ResultSet res = preparedStatement.executeQuery();
+//
+//            while (res.next()) {
+//                sessionUserId = res.getInt(1);
+//                username = res.getString(2);
+//            }
+////            Register.main();
+////            if (st == false) {
+//////                Register.main();
+////            } else {
+////                Index indexObj = new Index();
+////                indexObj.mainIndex();
+////            }
+//        } catch (Exception e) {
+//            System.out.println(e);
+//        }
+//
+//        jLabel6.setText(username);
+
+
+    }//GEN-LAST:event_formWindowActivated
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jMenu9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu9MouseClicked
+        // TODO add your handling code here:
+//        About_us.aboutusMain();
+    }//GEN-LAST:event_jMenu9MouseClicked
+
+    private void jMenu8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu8MouseClicked
+        // TODO add your handling code here:
+//        contact_us.contactPage();
+    }//GEN-LAST:event_jMenu8MouseClicked
+
+    private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
+        // TODO add your handling code here:
+//        Update_Userdata.main(args);
+    }//GEN-LAST:event_jMenu5MouseClicked
+
     //Connecting to Database
     Connection connectToDatabase() {
-        System.out.println("Establishing Connection::");
+//        System.out.println("Establishing Connection::");
         Connection con;
         try {
             con = conn.getCon();
@@ -461,14 +528,14 @@ public class Index extends javax.swing.JFrame {
             String query = "insert into moisture(m_value) values(" + s + ")";
             Statement st = con.createStatement();
 
-            System.out.println("Statement created");
+//            System.out.println("Statement created");
             int x = st.executeUpdate(query);
 
-            System.out.println("Execute Updated");
+//            System.out.println("Execute Updated");
             if (x > 0) {
-                System.out.println("Data saved");
+//                System.out.println("Data saved");
             } else {
-                System.out.println("Data cant be saved.");
+//                System.out.println("Data cant be saved.");
             }
 
         } catch (SQLException e) {
@@ -484,14 +551,14 @@ public class Index extends javax.swing.JFrame {
             String query = "UPDATE valve SET v_status='" + s + "' WHERE v_id = 1";
             Statement st = con.createStatement();
 
-            System.out.println("Statement created");
+//            System.out.println("Statement created");
             int x = st.executeUpdate(query);
 
-            System.out.println("Execute Updated");
+//            System.out.println("Execute Updated");
             if (x > 0) {
-                System.out.println("Data saved. Valve");
+//                System.out.println("Data saved. Valve");
             } else {
-                System.out.println("Data cant be saved.Valve");
+//                System.out.println("Data cant be saved.Valve");
             }
 
         } catch (SQLException e) {
@@ -505,7 +572,7 @@ public class Index extends javax.swing.JFrame {
     boolean setMinMoisture() {
         Connection con = connectToDatabase();
         System.out.println("Setting Moisture values and water req.");
-        String s = "select p.water_req, min_moisture, max_moisture from plant p where p.plantid IN(select f.plantid from farm f where f.userid = 100 )";
+        String s = "select p.water_req, p.min_moisture, p.max_moisture from plant p where p.plantid IN(select f.plantid from farm f where f.userid = 100 )";
         try {
             PreparedStatement ps = con.prepareStatement(s);
             ResultSet rs = ps.executeQuery();
@@ -528,7 +595,7 @@ public class Index extends javax.swing.JFrame {
             System.out.println("Minimum Moisture cant be set:: " + e);
             return false;
         }
-        System.out.println("Done Setting Min Moisture");
+//        System.out.println("Done Setting Min Moisture");
         return true;
 
     }
@@ -556,6 +623,7 @@ public class Index extends javax.swing.JFrame {
             System.out.println("Problem in connecting to the serial port:: " + e);
             return false;
         }
+        System.out.println("Serial Port Done");
         return true;
     }
 
@@ -567,7 +635,7 @@ public class Index extends javax.swing.JFrame {
 
         @Override
         public void serialEvent(SerialPortEvent event) {
-            System.out.println("inside Serial Event");
+//            System.out.println("inside Serial Event");
             if (event.isRXCHAR() && event.getEventValue() > 0) {
                 return;
             }
@@ -578,7 +646,7 @@ public class Index extends javax.swing.JFrame {
     private void sendMessage(String s) {
         try {
             System.out.println("Inside Send mEssage:: msg=" + s);
-            System.out.println("Serial Port :: " + serialPort + " Name: " + serialPort.getPortName());
+//            System.out.println("Serial Port :: " + serialPort + " Name: " + serialPort.getPortName());
 
             serialPort.writeString(s);
         } catch (SerialPortException e) {
@@ -608,39 +676,70 @@ public class Index extends javax.swing.JFrame {
                 @Override
                 public void run() {
                     try {
+                        System.out.println("Inside Thread run");
+                        int waterReq = Integer.parseInt(plantWaterReq);
+                        System.out.println("Water requirement is : "+waterReq);
+                        int min = Integer.parseInt(plantMinMoisture);
+                        int max = Integer.parseInt(plantMaxMoisture);
+
+                        int moistureLevel = 0;
+                        System.out.println("==============================Water rqq = " + waterReq);
+                        System.out.println("===========================min = " + min);
+                        System.out.println("================================max = " + max);
 
                         while (true) {
 
-                            int moistureLevel = readMoisture();
-                            String valve = null;
+//                            int moistureLevel = readMoisture();
+//                            serialPort.writeString("readm");
+                            sendMessage("readm");
+                            System.out.println("Write done");
+                            String reply = receiveMessage();
+                            System.out.println("Read done" + reply);
+                            moistureLevel = Integer.parseInt(reply);
+//                            moistureLevel=5;
+                            System.out.println("After Mois Requ");
+                            String valve = "OFF";
+                            presentMoistureLevel = moistureLevel;
+                            if (previousMoistureLevel - presentMoistureLevel > 40) {
 
-                            if (Integer.parseInt(plantWaterReq) > 0) {
-                                if (moistureLevel < Integer.parseInt(plantMinMoisture)) {
-                                    changeValveState("ON");
-                                    valve = "ON";
-                                }
+                            } else {
+                                System.out.println("*********************INside Else of Start Infinite Loop");
+                                if (waterReq > 0) {
+                                    if (moistureLevel < min) {
+                                        System.out.println("***********************************Inside ML<PMM");
+//                                        changeValveState("ON");
+                                        valve = "ON";
+                                    }
 
-                                if (moistureLevel >= Integer.parseInt(plantMaxMoisture)) {
-                                    changeValveState("OFF");
-                                    valve = "OFF";
+                                    if (moistureLevel >= max) {
+                                        System.out.println("***********************Inside ML>PMM");
+//                                        changeValveState("OFF");
+                                        valve = "OFF";
+                                    }
                                 }
+                                System.out.println("A**************fter both IF");
+//                                changeValveState("OFF");
+                                previousMoistureLevel = presentMoistureLevel;
+                                insertIntoMoisture(connectToDatabase(), "" + moistureLevel + "");
+                                updateInValve(connectToDatabase(), valve);
+                                emptyTable(dtm);
+                                showSensorTable();
+                                setProgressBar();
+                                createChart();
+
                             }
+                            System.out.println("********************After big IF");
 
-                            changeValveState("OFF");
-                            insertIntoMoisture(connectToDatabase(), "" + moistureLevel + "");
-                            updateInValve(connectToDatabase(), valve);
-                            emptyTable(dtm);
-                            showSensorTable();
-                            setProgressBar();
-                            createChart();
-                            Thread.sleep(10000);
+                            Thread.sleep(3000);
 
                         }
                     } catch (Exception e) {
-                        System.out.println("Error in run Thread :: " + e);
+                        System.out.println("Start Error in run Thread :: " + e);
                     }
                 }
             };
+//            createLog();
+//            System.out.println("Log created");
             t.start();
         } catch (Exception e) {
             System.out.println("Problem in Start infinite loop:: " + e);
@@ -665,6 +764,10 @@ public class Index extends javax.swing.JFrame {
                 } else {
                     table_valve = "ON";
                 }
+
+                jTextArea1.append("\nDateTime :: " + table_time);
+                jTextArea1.append("\t Moisture Level :: " + table_moisture_percentage);
+                jTextArea1.append("\t Valve Status :: " + table_valve);
 
                 Object obj[] = {table_time, table_moisture_percentage, table_valve};
                 dtm.addRow(obj);
@@ -730,19 +833,22 @@ public class Index extends javax.swing.JFrame {
 
     //change valve state
     void changeValveState(String state) {
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$Change Valve State: Sending Message");
         sendMessage("cvs");
-        String moisture = null;
-        while (moisture != null) {
-            moisture = receiveMessage();
-        }
         sendMessage(state);
+//        String moisture = null;
+//        while (moisture != null) {
+//            moisture = receiveMessage();
+//        }
+        System.out.println("");
+
     }
 
     //create Chart in jPanel5
-    void createChart() {
+    private void createChart() {
         try {
             jPanel5.setLayout(new java.awt.BorderLayout());
-            
+
 //            XYSeries series = new XYSeries("XYGraph");
 //            String query = "SELECT time(time) FROM moisture order BY time DESC LIMIT 10";
 //            Connection con = connectToDatabase();
@@ -754,17 +860,14 @@ public class Index extends javax.swing.JFrame {
 //                String table_moisture_percentage = rs.getString(2);
 //                series(table_time,table_moisture_percentage);
 //            }
-
             String query = "SELECT time(time),m_value FROM moisture order BY time DESC LIMIT 10";
             Connection con = connectToDatabase();
-            
-            
 
 // Add the series to your data set
             JDBCXYDataset jds = new JDBCXYDataset(con);
             jds.executeQuery(query);
-            JFreeChart chart = ChartFactory.createTimeSeriesChart("Moisture Level","Time", "Moisture", jds, true, true,false);
-         
+            JFreeChart chart = ChartFactory.createTimeSeriesChart("Moisture Level", "Time", "Moisture", jds, true, true, false);
+
 // Generate the graph
 //            JFreeChart chart = ChartFactory.createXYLineChart(
 //                    "XY Chart", // Title
@@ -777,7 +880,7 @@ public class Index extends javax.swing.JFrame {
 //                    false // Configure chart to generate URLs?
 //            );
             ChartPanel CP = new ChartPanel(chart);
-            
+
             jPanel5.add(CP, BorderLayout.CENTER);
             jPanel5.validate();
 
@@ -786,7 +889,61 @@ public class Index extends javax.swing.JFrame {
         }
     }
 
+    //create Logs
+    void createLog() {
+        System.out.println("Create Log Started");
+        jTextArea1.append("\t\t\tGENERAL INFORMATION\n\n");
+        String userName = null;
+        String userPhone = null;
+        String userEmail = null;
+        String userAddress = null;
+        String query = "select name,phonenumber,email,address from users where";
+        try {
+            Connection con = connectToDatabase();
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                userName = rs.getString(1);
+                userPhone = rs.getString(2);
+                userEmail = rs.getString(3);
+                userAddress = rs.getString(4);
+            }
+            jTextArea1.append("Name      : " + userName);
+            jTextArea1.append("\nPhone No. : " + userPhone);
+            jTextArea1.append("\nemail     : " + userEmail);
+            jTextArea1.append("\naddress   : " + userAddress);
+            System.out.println("------------------------------------------------\n\n");
+            query = "select * from moisture order by time DESC LIMIT 10";
+            rs = st.executeQuery(query);
+            while(rs.next()){
+                jTextArea1.append("\nDateTime :: "+rs.getString("time"));
+                jTextArea1.append("\t Moisture Level :: "+rs.getString("m_value"));
+                String valveStatus;
+                if (Integer.parseInt(rs.getString("m_value")) > Integer.parseInt(plantMaxMoisture)) {
+                    valveStatus = "OFF";
+                } else {
+                    valveStatus = "ON";
+                }
+                jTextArea1.append("\t Valve Status:: "+valveStatus);
+                
+                
+
+            }
+            
+            closeConnection(con);
+        } catch (SQLException e) {
+            System.out.println("Error in getting user data:: " + e);
+        }
+
+        Thread t_log = new Thread() {
+            public void run() {
+                
+            }
+        };
+
+    }
     /**
+     * @param args
      */
     //    public static void main(String args[]) {
     //        int i=3;
@@ -824,6 +981,7 @@ public class Index extends javax.swing.JFrame {
     //    }
     //My Main method
     public static void mainIndex() {
+//    public static void main(String[] args) {
         int i = 3;
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -851,49 +1009,57 @@ public class Index extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Index().setVisible(true);
-            }
-        });
 //        Index index = new Index();
+        Index indexObj = new Index();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                indexObj.setVisible(true);
+//                index.setVisible(true);
+            }
+
+        });
+        indexObj.setSerialPort();
+        indexObj.setMinMoisture();
+        indexObj.createChart();
+        indexObj.showSensorTable();
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    indexObj.startInfiniteLoop();
+                } catch (Exception e) {
+                    System.out.println("Error:  +" + e);
+                }
+
+            }
+        };
+        
+        t.start();
+
+//        new Index().createLog();
 //        index.setSerialPort();
 //        index.setMinMoisture();
+//        System.out.println("After Min Moisture");
 //        try {
 //            Thread t = new Thread() {
 //                @Override
 //                public void run() {
 //                    try {
-//
-//                        while (true) {
-//                            int moistureLevel = index.readMoisture();
-//                            String valve = null;
-//                            if (Integer.parseInt(index.plantWaterReq) > 0) {
-//                                if (moistureLevel < Integer.parseInt(index.plantMinMoisture)) {
-//                                    index.changeValveState("ON");
-//                                    valve = "ON";
-//                                }
-//
-//                                if (moistureLevel >= Integer.parseInt(index.plantMaxMoisture)) {
-//                                    index.changeValveState("OFF");
-//                                    valve = "OFF";
-//                                }
-//                            }
-//                            index.changeValveState("OFF");
-//                            index.insertIntoMoisture(index.connectToDatabase(), "" + moistureLevel + "");
-//                            index.updateInValve(index.connectToDatabase(), valve);
-//                            Thread.sleep(3000);
-//                        }
-//                    } catch (InterruptedException | NumberFormatException e) {
-//                        System.out.println("Problem in Start infinite loop Thread::" + e);
+//                        index.showSensorTable();
+//                        index.createChart();
+//                    } catch (Exception e) {
+//                        System.out.println("Error:  +" + e);
 //                    }
+//
 //                }
 //            };
+//
 //            t.start();
+//            index.createLog();
 //        } catch (Exception e) {
 //            System.out.println("Problem in Start infinite loop:: " + e);
 //        }
-
 //        Index index = new Index();
 //        if (index.setSerialPort() && index.setMinMoisture()) {
 //            index.startInfiniteLoop();
@@ -904,15 +1070,12 @@ public class Index extends javax.swing.JFrame {
 ////                    }
 ////                };
 ////
-////            } catch (Exception e) {
-////                System.out.println("Index Main ::" + e);
-////            }
+//        } catch (Exception e) {
+//            System.out.println("Index Main ::" + e);
 //        }
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
