@@ -5,6 +5,17 @@
  */
 package majorproject;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
 /**
  *
  * @author User
@@ -37,9 +48,14 @@ public class contact_us extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBounds(new java.awt.Rectangle(100, 100, 0, 0));
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 102));
 
@@ -68,7 +84,7 @@ public class contact_us extends javax.swing.JFrame {
         jLabel2.setText("Message :");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel3.setText("Reason");
+        jLabel3.setText("Query");
 
         jTextField1.setFont(new java.awt.Font("MS Reference Sans Serif", 0, 14)); // NOI18N
 
@@ -78,6 +94,11 @@ public class contact_us extends javax.swing.JFrame {
 
         jButton1.setFont(new java.awt.Font("Segoe UI Symbol", 1, 18)); // NOI18N
         jButton1.setText("Send");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
 
         jPanel2.setBackground(new java.awt.Color(0, 0, 102));
 
@@ -137,10 +158,30 @@ public class contact_us extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        String reason = jTextField1.getText();
+        String message = jTextArea1.getText();
+        String subject = "Query from client" + reason;
+        int mailStatus = JavaMail.sendMail("purvi.pahadiya.7@gmail.com", subject, message);
+
+        if (mailStatus == 1) {
+            System.out.println("Successfully sent");
+
+//            Dialog.main();
+        } else {
+            System.out.println("Failed");
+        }
+    }//GEN-LAST:event_jButton1MouseClicked
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        // TODO add your handling code here:
+//        Index.se
+    }//GEN-LAST:event_formWindowClosed
+
     /**
      * @param args the command line arguments
      */
-    public static void maincs() {
+    public static void contactPage() {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.

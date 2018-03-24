@@ -5,6 +5,10 @@
  */
 package majorproject;
 
+import Connection.conn;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -45,63 +49,32 @@ public class MajorProject extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-       
-        Index index = new Index();
-//        index.setVisible(true);
-        index.mainIndex();
-        index.setSerialPort();
-        index.setMinMoisture();
-        Thread t = new Thread(){
-          public void run(){
-            index.startInfiniteLoop();
-              
-          }  
-        };
-        t.start();
-//        Thread t = new Thread() {
-//            @Override
-//            public void run() {
-//
-//                int moistureLevel = index.readMoisture();
-//                String valve = null;
-//
-//                if (Integer.parseInt(index.plantWaterReq)
-//                        > 0) {
-//                    if (moistureLevel < Integer.parseInt(index.plantMinMoisture)) {
-//                        index.changeValveState("ON");
-//                        valve = "ON";
-//                    }
-//
-//                    if (moistureLevel >= Integer.parseInt(index.plantMaxMoisture)) {
-//                        index.changeValveState("OFF");
-//                        valve = "OFF";
-//                    }
-//                }
-//
-//                index.changeValveState(
-//                        "OFF");
-//                index.insertIntoMoisture(index.connectToDatabase(), "" + moistureLevel + "");
-//                index.updateInValve(index.connectToDatabase(), valve);
-//            }
-//        };
-//        t.start();
-        
-        System.out.println("MAIN THREAD");
-//        Index index = new Index();
-        //setting Serial Port
-//        if(index.setSerialPort() && index.setMinMoisture()){
-////            index.startInfiniteLoop();
-//            try{
-//            Index.serialPort.writeString("message");
-//            }catch(Exception e){
-//                System.out.println("Major ::"+e);
-//            }
-//        }
-//        Index index = new Index();
-//        if (index.setSerialPort() && index.setMinMoisture()) {
-//            index.startInfiniteLoop();
-//        }
+
+        //Purvi's code start
+        Connection con = conn.getCon();
+
+        String sql = "Select * from users";
+
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = con.prepareStatement(sql);
+            ResultSet res = preparedStatement.executeQuery();
+            boolean st = res.next();
+
+//            Register.main();
+            if (st == false) {
+                Register.main();
+            } else {
+                Index.mainIndex();
+                
+
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        //Purvi's code end
+//        
 //        contact_us cobj = new contact_us();
 //        cobj.main(args);
 //        Login loginObj = new Login();
@@ -111,7 +84,6 @@ public class MajorProject extends Application {
 //        launch(args);
 //        main m = new main();
 //        m.setVisible(true);
-
     }
 
-}                      
+}

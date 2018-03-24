@@ -7,11 +7,17 @@ package majorproject;
 
 import Connection.conn;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
+import javafx.scene.chart.NumberAxis;
 import javax.swing.table.DefaultTableModel;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
@@ -20,6 +26,13 @@ import jssc.SerialPortException;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.jdbc.JDBCXYDataset;
 
 /**
@@ -42,6 +55,7 @@ public class Index extends javax.swing.JFrame {
     int presentMoistureLevel;
     int previousMoistureLevel = 0;
     int sessionUserId;
+    boolean isValveON = false;
 
     /**
      * Creates new form main
@@ -68,7 +82,7 @@ public class Index extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -111,6 +125,11 @@ public class Index extends javax.swing.JFrame {
         jTabbedPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTabbedPane1.setToolTipText("");
         jTabbedPane1.setFont(new java.awt.Font("Microsoft Sans Serif", 1, 24)); // NOI18N
+        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane1MouseClicked(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel3.setText("Logs");
@@ -145,17 +164,18 @@ public class Index extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel4.setText("Water Usage");
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 948, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 876, Short.MAX_VALUE)
         );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 586, Short.MAX_VALUE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 572, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -163,20 +183,23 @@ public class Index extends javax.swing.JFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(63, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(jLabel4))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(72, 72, 72)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(96, 96, 96))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(69, 69, 69)
                 .addComponent(jLabel4)
-                .addGap(41, 41, 41)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(76, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Water Usage   .", jPanel4);
@@ -281,6 +304,11 @@ public class Index extends javax.swing.JFrame {
 
         jButton1.setFont(new java.awt.Font("Segoe UI Symbol", 1, 24)); // NOI18N
         jButton1.setText("Show Details");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -440,6 +468,7 @@ public class Index extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
     private void jMenu3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MouseClicked
         // TODO add your handling code here:
 
@@ -496,6 +525,17 @@ public class Index extends javax.swing.JFrame {
         // TODO add your handling code here:
 //        Update_Userdata.main(args);
     }//GEN-LAST:event_jMenu5MouseClicked
+
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
+        // TODO add your handling code here:
+        
+//        createBarGraph();
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        createBarGraph();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     //Connecting to Database
     Connection connectToDatabase() {
@@ -631,6 +671,8 @@ public class Index extends javax.swing.JFrame {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    
+
     private static class PortReader implements SerialPortEventListener {
 
         @Override
@@ -668,17 +710,64 @@ public class Index extends javax.swing.JFrame {
         }
     }
 
+    //Insert data in motor table
+    void insertIntoMotor() {
+        try {
+
+            String query = "insert into motor values(1," + Common.valve_start_time_hr + "," + Common.valve_start_time_min + "," + Common.valve_stop_time_hr + "," + Common.valve_stop_time_min + "," + Common.active_time_min + ")";
+            Connection con = connectToDatabase();
+            Statement st = con.createStatement();
+            int x = st.executeUpdate(query);
+            closeConnection(con);
+        } catch (Exception e) {
+            System.out.println("Problem in inserting in motor table :: "+e);
+        }
+    }
+    
+    //create Bar graph for water requirement
+    void createBarGraph(){
+        try {
+            
+        DefaultCategoryDataset barchartdata = new DefaultCategoryDataset();
+        String query = "select * from records";
+        Connection con = connectToDatabase();
+        PreparedStatement ps = con.prepareStatement(query);
+        ResultSet rs =ps.executeQuery();
+        while(rs.next()){
+            barchartdata.setValue(rs.getInt("water_used"),"Water used",rs.getString("date"));
+        }
+//        barchartdata.setValue(20000, "ABC", "Jan");
+//        barchartdata.setValue(20000, "ABC", "Feb");
+//        barchartdata.setValue(20000, "ABC", "Mar");
+//        barchartdata.setValue(20000, "ABC", "Apr");
+        
+        JFreeChart barchart = ChartFactory.createBarChart("WATER USAGE", "DATE", "LITRES", barchartdata, PlotOrientation.VERTICAL,false,true,false);
+            CategoryPlot barchrt = barchart.getCategoryPlot();
+            barchrt.setRangeGridlinePaint(Color.ORANGE);
+            ChartPanel barPanel = new ChartPanel(barchart);
+            jPanel1.setLayout(new BorderLayout());
+            jPanel1.setBackground(Color.red);
+            jPanel1.removeAll();
+            jPanel1.add(barPanel,BorderLayout.CENTER);
+            jPanel1.validate();
+            closeConnection(con);
+        } catch (Exception e) {
+            System.out.println("Problem in creating bar chart:: "+e);
+        }
+    }
+    
     //Read data for Eternity ;P
     void startInfiniteLoop() {
         try {
-
-            Thread t = new Thread() {
+            createLog();
+            Thread t;
+            t = new Thread() {
                 @Override
                 public void run() {
                     try {
                         System.out.println("Inside Thread run");
                         int waterReq = Integer.parseInt(plantWaterReq);
-                        System.out.println("Water requirement is : "+waterReq);
+                        System.out.println("Water requirement is : " + waterReq);
                         int min = Integer.parseInt(plantMinMoisture);
                         int max = Integer.parseInt(plantMaxMoisture);
 
@@ -709,12 +798,64 @@ public class Index extends javax.swing.JFrame {
                                         System.out.println("***********************************Inside ML<PMM");
 //                                        changeValveState("ON");
                                         valve = "ON";
+                                        isValveON = true;
+                                        Common.valve_state = valve;
+                                        SimpleDateFormat dateTimeInGMT = new SimpleDateFormat("yyyy-MMM-dd hh:mm:ss aa");
+
+                                        //Setting the time zone
+                                        dateTimeInGMT.setTimeZone(TimeZone.getTimeZone("GMT"));
+                                        System.out.println();
+                                        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                                        LocalDateTime now = LocalDateTime.now();
+//                                        jTextArea1.append(now.format(dtf));
+
+                                        Common.valve_start_time_hr = now.getHour();
+                                        Common.valve_start_time_min = now.getMinute();
+
+//                                        jTextArea1.append("\n=>>>>>>>>>>>>>>>>>>>>>>.DATE"+dtf.format(now));
+//                                        jTextArea1.append("\n=>>>>>>>>>>>>>>>>>>>>>>.DATE"+Utility.typeOfMethodSignature(dtf.format(now)));
+//                                        Common.valve_start_time = dtf.format(now);
                                     }
 
                                     if (moistureLevel >= max) {
                                         System.out.println("***********************Inside ML>PMM");
 //                                        changeValveState("OFF");
                                         valve = "OFF";
+                                        if (isValveON) {
+                                            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                                            LocalDateTime now = LocalDateTime.now();
+                                            Common.valve_state = valve;
+                                            isValveON = false;
+
+                                            Common.valve_stop_time_hr = now.getHour();
+                                            Common.valve_stop_time_min = now.getMinute();
+                                            System.out.println("\n\n====================>Valve<======================\n");
+                                            System.out.println("\tStart hr  = " + Common.valve_start_time_hr);
+                                            System.out.println("\tStart min = " + Common.valve_start_time_min);
+                                            System.out.println("\tStop hr   = " + Common.valve_stop_time_hr);
+                                            System.out.println("\tStop min  = " + Common.valve_stop_time_min);
+                                            jTextArea1.append("\n\n====================>Valve<======================\n");
+                                            jTextArea1.append("\tStart hr  = " + Common.valve_start_time_hr);
+                                            jTextArea1.append("\tStart min = " + Common.valve_start_time_min);
+                                            jTextArea1.append("\tStop hr   = " + Common.valve_stop_time_hr);
+                                            jTextArea1.append("\tStop min  = " + Common.valve_stop_time_min);
+                                            jTextArea1.append("\n\n\t Valve is OFF\n");
+                                            if (Common.valve_start_time_hr <= Common.valve_stop_time_hr) {
+                                                jTextArea1.append("\tInside first IF\n");
+                                                Common.active_time_min = (Common.valve_stop_time_hr - Common.valve_start_time_hr) * 60;
+                                                if (Common.valve_stop_time_min < Common.valve_start_time_min) {
+                                                    jTextArea1.append("\tInside second IF\n");
+                                                    Common.active_time_min -= 60;
+                                                    Common.active_time_min += (Common.valve_stop_time_min + 60) - Common.valve_start_time_min;
+                                                } else {
+                                                    Common.active_time_min += Common.valve_stop_time_min - Common.valve_start_time_min;
+                                                }
+                                                insertIntoMotor();
+//                                                waterReq = waterReq- Common.active_time_min*Common.waterRate;
+                                                jTextArea1.append("\t======>Active Motor Time = " + Common.active_time_min + "<=======================\n\n");
+                                            }
+                                        }
+
                                     }
                                 }
                                 System.out.println("A**************fter both IF");
@@ -723,6 +864,12 @@ public class Index extends javax.swing.JFrame {
                                 insertIntoMoisture(connectToDatabase(), "" + moistureLevel + "");
                                 updateInValve(connectToDatabase(), valve);
                                 emptyTable(dtm);
+
+//                                int rows = jTextArea1.getRows();
+//                                if (rows>10) {
+//                                    jTextArea1.remove(rows / 2);
+//
+//                                }
                                 showSensorTable();
                                 setProgressBar();
                                 createChart();
@@ -734,7 +881,7 @@ public class Index extends javax.swing.JFrame {
 
                         }
                     } catch (Exception e) {
-                        System.out.println("Start Error in run Thread :: " + e);
+                        System.out.println("Start Error in run Thread Start Infinite Loop :: " + e);
                     }
                 }
             };
@@ -754,6 +901,7 @@ public class Index extends javax.swing.JFrame {
             Connection con = connectToDatabase();
             PreparedStatement ps = con.prepareStatement(s_select);
             ResultSet rs = ps.executeQuery();
+            int count_for_log = 0;
             while (rs.next()) {
 
                 String table_time = rs.getString(1);
@@ -764,11 +912,13 @@ public class Index extends javax.swing.JFrame {
                 } else {
                     table_valve = "ON";
                 }
+                if (count_for_log == 0) {
 
-                jTextArea1.append("\nDateTime :: " + table_time);
-                jTextArea1.append("\t Moisture Level :: " + table_moisture_percentage);
-                jTextArea1.append("\t Valve Status :: " + table_valve);
-
+                    jTextArea1.append("\nDateTime :: " + table_time);
+                    jTextArea1.append("\t Moisture Level :: " + table_moisture_percentage);
+                    jTextArea1.append("\t Valve Status :: " + table_valve);
+                    count_for_log++;
+                }
                 Object obj[] = {table_time, table_moisture_percentage, table_valve};
                 dtm.addRow(obj);
             }
@@ -867,7 +1017,13 @@ public class Index extends javax.swing.JFrame {
             JDBCXYDataset jds = new JDBCXYDataset(con);
             jds.executeQuery(query);
             JFreeChart chart = ChartFactory.createTimeSeriesChart("Moisture Level", "Time", "Moisture", jds, true, true, false);
+            
+            XYPlot xyPlot = chart.getXYPlot();
+            ValueAxis rangeAxis = xyPlot.getRangeAxis(); 
+            rangeAxis.setRange(0, 100); 
+            
 
+     
 // Generate the graph
 //            JFreeChart chart = ChartFactory.createXYLineChart(
 //                    "XY Chart", // Title
@@ -880,7 +1036,7 @@ public class Index extends javax.swing.JFrame {
 //                    false // Configure chart to generate URLs?
 //            );
             ChartPanel CP = new ChartPanel(chart);
-
+            
             jPanel5.add(CP, BorderLayout.CENTER);
             jPanel5.validate();
 
@@ -897,7 +1053,7 @@ public class Index extends javax.swing.JFrame {
         String userPhone = null;
         String userEmail = null;
         String userAddress = null;
-        String query = "select name,phonenumber,email,address from users where";
+        String query = "select name,phonenumber,email,address from users where userid =1";
         try {
             Connection con = connectToDatabase();
             Statement st = con.createStatement();
@@ -912,24 +1068,22 @@ public class Index extends javax.swing.JFrame {
             jTextArea1.append("\nPhone No. : " + userPhone);
             jTextArea1.append("\nemail     : " + userEmail);
             jTextArea1.append("\naddress   : " + userAddress);
-            System.out.println("------------------------------------------------\n\n");
+            jTextArea1.append("\n------------------------------------------------------------------------------------------------------\n\n");
             query = "select * from moisture order by time DESC LIMIT 10";
             rs = st.executeQuery(query);
-            while(rs.next()){
-                jTextArea1.append("\nDateTime :: "+rs.getString("time"));
-                jTextArea1.append("\t Moisture Level :: "+rs.getString("m_value"));
+            while (rs.next()) {
+                jTextArea1.append("\nDateTime :: " + rs.getString("time"));
+                jTextArea1.append("\t Moisture Level :: " + rs.getString("m_value"));
                 String valveStatus;
                 if (Integer.parseInt(rs.getString("m_value")) > Integer.parseInt(plantMaxMoisture)) {
                     valveStatus = "OFF";
                 } else {
                     valveStatus = "ON";
                 }
-                jTextArea1.append("\t Valve Status:: "+valveStatus);
-                
-                
+                jTextArea1.append("\t Valve Status:: " + valveStatus);
 
             }
-            
+
             closeConnection(con);
         } catch (SQLException e) {
             System.out.println("Error in getting user data:: " + e);
@@ -937,11 +1091,12 @@ public class Index extends javax.swing.JFrame {
 
         Thread t_log = new Thread() {
             public void run() {
-                
+
             }
         };
 
     }
+
     /**
      * @param args
      */
@@ -1022,7 +1177,8 @@ public class Index extends javax.swing.JFrame {
         indexObj.setSerialPort();
         indexObj.setMinMoisture();
         indexObj.createChart();
-        indexObj.showSensorTable();
+//        indexObj.showSensorTable();
+        indexObj.createBarGraph();
         Thread t = new Thread() {
             @Override
             public void run() {
@@ -1034,7 +1190,7 @@ public class Index extends javax.swing.JFrame {
 
             }
         };
-        
+
         t.start();
 
 //        new Index().createLog();
@@ -1095,11 +1251,11 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private static javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private static javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
