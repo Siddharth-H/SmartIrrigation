@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * @author User
  */
 public class Farm_Registeration extends javax.swing.JFrame {
-    
+
     public static int farmId = 0;
 
     /**
@@ -52,6 +52,9 @@ public class Farm_Registeration extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBounds(new java.awt.Rectangle(600, 70, 0, 0));
@@ -65,6 +68,11 @@ public class Farm_Registeration extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         jTextArea1.setRows(5);
+        jTextArea1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextArea1FocusLost(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTextArea1);
 
         jLabel3.setBackground(new java.awt.Color(0, 0, 0));
@@ -93,6 +101,11 @@ public class Farm_Registeration extends javax.swing.JFrame {
         jLabel6.setText("Soil Type");
 
         jTextField1.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextField1FocusLost(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 102));
 
@@ -142,6 +155,11 @@ public class Farm_Registeration extends javax.swing.JFrame {
         jLabel7.setText("Address");
 
         jTextField2.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        jTextField2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextField2FocusLost(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -170,8 +188,13 @@ public class Farm_Registeration extends javax.swing.JFrame {
                             .addComponent(jTextField1)
                             .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jTextField2)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(328, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))))
+                .addContainerGap(113, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,7 +207,9 @@ public class Farm_Registeration extends javax.swing.JFrame {
                 .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel10)))
                 .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
@@ -192,11 +217,13 @@ public class Farm_Registeration extends javax.swing.JFrame {
                 .addGap(46, 46, 46)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
                 .addGap(53, 53, 53)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(63, 63, 63)
@@ -222,7 +249,7 @@ public class Farm_Registeration extends javax.swing.JFrame {
 
 //
         //Fetching plantId
-        String query = "select plantid from plant where plantname = "+plantName;
+        String query = "select plantid from plant where plantname = " + plantName;
         try {
 
             PreparedStatement ps = con.prepareCall(query);
@@ -233,7 +260,7 @@ public class Farm_Registeration extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println(e);
         }
-        
+
         String sql = "INSERT INTO farm (farmid, plantid, area, soil, no_of_rows, address, userid) VALUES (?, ?, ?, ?, ?,?, ?);";
 
         PreparedStatement preparedStatement;
@@ -254,19 +281,21 @@ public class Farm_Registeration extends javax.swing.JFrame {
                 int emailStatus = sendRegistrationEmail(Common.USER_NAME, Common.USER_EMAIL);
 
                 this.dispose();
-                Index index = new Index();
                 Index.mainIndex();
-                index.setSerialPort();
-                index.setMinMoisture();
-                Thread t = new Thread() {
-                    public void run() {
-
-                        index.startInfiniteLoop();
-
-//                        index.createLog();
-                    }
-                };
-                t.start();
+//
+//                Index index = new Index();
+//                Index.mainIndex();
+//                index.setSerialPort();
+//                index.setMinMoisture();
+//                Thread t = new Thread() {
+//                    public void run() {
+//
+//                        index.startInfiniteLoop();
+//
+////                        index.createLog();
+//                    }
+//                };
+//                t.start();
                 DialogBox.main("Your farm has been registered");
                 System.out.println("Your farm has been registered");
             } else {
@@ -278,6 +307,38 @@ public class Farm_Registeration extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_jButton1MouseClicked
+
+    private void jTextArea1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextArea1FocusLost
+        // TODO add your handling code here:
+        String add = jTextArea1.getText();
+        if (add.isEmpty()) {
+            jLabel4.setText("Enter a valid Address");
+        }
+    }//GEN-LAST:event_jTextArea1FocusLost
+
+    private void jTextField2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField2FocusLost
+        // TODO add your handling code here:
+        String add2 = jTextArea1.getText();
+        String numbers = "(.*[0-9].*)";
+        String alphabets = "(.*[A-Z][a-z].*)";
+        if (!add2.matches(numbers)) {
+//        if (add2.contains(alphabets)) {
+            jLabel9.setText("Only numerals are allowed");
+        } else {
+            jLabel9.setText(" ");
+        }
+    }//GEN-LAST:event_jTextField2FocusLost
+
+    private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
+        // TODO add your handling code here:
+        String add3 = jTextArea1.getText();
+        String numbers = "(.*[0-9].*)";
+        if (add3.matches(numbers)) {
+            jLabel10.setText(" ");
+        } else {
+            jLabel10.setText("Only numerals are allowed");
+        }
+    }//GEN-LAST:event_jTextField1FocusLost
 
     /**
      * @param args the command line arguments
@@ -323,17 +384,19 @@ public class Farm_Registeration extends javax.swing.JFrame {
         return emailStatus;
     }
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

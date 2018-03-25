@@ -100,7 +100,6 @@ public class Index extends javax.swing.JFrame {
         jComboBox2 = new javax.swing.JComboBox<>();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
@@ -113,6 +112,7 @@ public class Index extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(javax.swing.UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient"));
         setBounds(new java.awt.Rectangle(0, 0, 0, 0));
+        setPreferredSize(new java.awt.Dimension(1920, 1024));
         setResizable(false);
         setSize(new java.awt.Dimension(2100, 3000));
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -350,17 +350,13 @@ public class Index extends javax.swing.JFrame {
         jMenu1.setHideActionText(true);
         jMenu1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jMenu1.setMinimumSize(new java.awt.Dimension(27, 25));
-
-        jMenu5.setText("Update User Details");
-        jMenu5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jMenu5.addMouseListener(new java.awt.event.MouseAdapter() {
+        jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenu5MouseClicked(evt);
+                jMenu1MouseClicked(evt);
             }
         });
-        jMenu1.add(jMenu5);
 
-        jMenu4.setText("Check User Information");
+        jMenu4.setText("User Details");
         jMenu4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jMenu1.add(jMenu4);
 
@@ -382,6 +378,11 @@ public class Index extends javax.swing.JFrame {
 
         jMenu7.setText("Contact Us");
         jMenu7.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jMenu7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu7MouseClicked(evt);
+            }
+        });
 
         jMenu8.setText("Contact Us");
         jMenu8.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
@@ -475,36 +476,8 @@ public class Index extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenu3MouseClicked
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        // TODO add your handling code here:
-//        String username = null;
-//
-//        Connection con = conn.getCon();
-//
-//        String sql = "Select * from users";
-//
-//        PreparedStatement preparedStatement;
-//        try {
-//            preparedStatement = con.prepareStatement(sql);
-//            ResultSet res = preparedStatement.executeQuery();
-//
-//            while (res.next()) {
-//                sessionUserId = res.getInt(1);
-//                username = res.getString(2);
-//            }
-////            Register.main();
-////            if (st == false) {
-//////                Register.main();
-////            } else {
-////                Index indexObj = new Index();
-////                indexObj.mainIndex();
-////            }
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        }
-//
-//        jLabel6.setText(username);
 
-
+        jLabel6.setText(Common.USER_NAME);
     }//GEN-LAST:event_formWindowActivated
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
@@ -513,18 +486,13 @@ public class Index extends javax.swing.JFrame {
 
     private void jMenu9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu9MouseClicked
         // TODO add your handling code here:
-//        About_us.aboutusMain();
+        About_us.aboutusMain();
     }//GEN-LAST:event_jMenu9MouseClicked
 
     private void jMenu8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu8MouseClicked
         // TODO add your handling code here:
-//        contact_us.contactPage();
+        contact_us.contactPage();
     }//GEN-LAST:event_jMenu8MouseClicked
-
-    private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
-        // TODO add your handling code here:
-//        Update_Userdata.main(args);
-    }//GEN-LAST:event_jMenu5MouseClicked
 
     private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
         // TODO add your handling code here:
@@ -536,6 +504,16 @@ public class Index extends javax.swing.JFrame {
         // TODO add your handling code here:
         createBarGraph();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
+        // TODO add your handling code here:
+        User_Info.main();
+    }//GEN-LAST:event_jMenu1MouseClicked
+
+    private void jMenu7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu7MouseClicked
+        // TODO add your handling code here:
+        contact_us.contactPage();
+    }//GEN-LAST:event_jMenu7MouseClicked
 
     //Connecting to Database
     Connection connectToDatabase() {
@@ -789,7 +767,7 @@ public class Index extends javax.swing.JFrame {
                             System.out.println("After Mois Requ");
                             String valve = "OFF";
                             presentMoistureLevel = moistureLevel;
-                            if (previousMoistureLevel - presentMoistureLevel > 40) {
+                            if (previousMoistureLevel - presentMoistureLevel > 30) {
 
                             } else {
                                 System.out.println("*********************INside Else of Start Infinite Loop");
@@ -1089,11 +1067,11 @@ public class Index extends javax.swing.JFrame {
             System.out.println("Error in getting user data:: " + e);
         }
 
-        Thread t_log = new Thread() {
-            public void run() {
-
-            }
-        };
+//        Thread t_log = new Thread() {
+//            public void run() {
+//
+//            }
+//        };
 
     }
 
@@ -1245,7 +1223,6 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu8;

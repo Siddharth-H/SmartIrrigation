@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -161,14 +162,18 @@ public class contact_us extends javax.swing.JFrame {
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         String reason = jTextField1.getText();
         String message = jTextArea1.getText();
-        String subject = "Query from client" + reason;
-        int mailStatus = JavaMail.sendMail("purvi.pahadiya.7@gmail.com", subject, message);
+        message = message + "\n\nFrom\n\nUserID: " + Common.USER_ID + "\nUserName: " + Common.USER_NAME + "\nUserEmail: " + Common.USER_EMAIL + "\nUser Phoneno: " + Common.USER_PHONE;
+        String subject = "Query from client: " + Common.USER_ID + " | " + reason;
+        int mailStatus = JavaMail.sendMail(Common.ADMIN_EMAIL, subject, message);
 
         if (mailStatus == 1) {
-            System.out.println("Successfully sent");
 
-//            Dialog.main();
+            System.out.println("Successfully sent");
+            this.dispose();
+            DialogBox.main("Your Query has been sent successfully");
         } else {
+            JOptionPane.showMessageDialog(rootPane, "Error Occured. Try Again");
+
             System.out.println("Failed");
         }
     }//GEN-LAST:event_jButton1MouseClicked

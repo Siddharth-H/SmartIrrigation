@@ -16,13 +16,15 @@ import javax.mail.internet.*;
 public class JavaMail {
 
     public static void main(String[] args) {
-//        int status = sendMail("Subejct", "Content");
+        int status = sendMail("purvi.pahadiya.7@gmail.com","Subejct", "Content");
     }
 
     public static int sendMail(String to, String subject, String content) {
         // Sender's email ID needs to be mentioned
         String from = "smartirrigation.cs@gmail.com";
+//        String from = "barkha.pahadiya@gmail.com";
         String pass = "smartirrigation2018";
+//        String pass = "purvijain";
         // Recipient's email ID needs to be mentioned.
 //        String to = "purvi.pahadiya.7@gmail.com";
 

@@ -5,10 +5,8 @@
  */
 package majorproject;
 
-import Connection.conn;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -50,40 +48,27 @@ public class MajorProject extends Application {
      */
     public static void main(String[] args) {
 
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+//	LocalDateTime now = LocalDateTime.now();
+//        Common.CURRENT_TIME = now;
+//	System.out.println(dtf.format(now));
         //Purvi's code start
-        Connection con = conn.getCon();
-
-        String sql = "Select * from users";
-
-        PreparedStatement preparedStatement;
         try {
-            preparedStatement = con.prepareStatement(sql);
-            ResultSet res = preparedStatement.executeQuery();
-            boolean st = res.next();
+            boolean user_st = Common.checkUser();
 
 //            Register.main();
-            if (st == false) {
-                Register.main();
+            if (user_st == false) {
+                Register.main();                                                            
             } else {
-                Index.mainIndex();
+                Login.main();
                 
-
             }
         } catch (Exception e) {
             System.out.println(e);
         }
 
-        //Purvi's code end
-//        
-//        contact_us cobj = new contact_us();
-//        cobj.main(args);
-//        Login loginObj = new Login();
-//        loginObj.setVisible(true);
-//    String arg[] = null;
-//        Login.main(arg);
-//        launch(args);
-//        main m = new main();
-//        m.setVisible(true);
     }
+
+    
 
 }
