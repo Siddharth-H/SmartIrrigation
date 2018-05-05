@@ -5,16 +5,7 @@
  */
 package majorproject;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -50,7 +41,8 @@ public class contact_us extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setBounds(new java.awt.Rectangle(100, 100, 0, 0));
+        setBounds(new java.awt.Rectangle(550, 100, 0, 0));
+        setIconImage(new ImageIcon("G:\\smlogo.png").getImage());
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {

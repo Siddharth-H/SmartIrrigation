@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -58,6 +59,7 @@ public class Farm_Registeration extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBounds(new java.awt.Rectangle(600, 70, 0, 0));
+        setIconImage(new ImageIcon("G:\\smlogo.png").getImage());
         setPreferredSize(new java.awt.Dimension(750, 900));
         setResizable(false);
 
@@ -282,20 +284,7 @@ public class Farm_Registeration extends javax.swing.JFrame {
 
                 this.dispose();
                 Index.mainIndex();
-//
-//                Index index = new Index();
-//                Index.mainIndex();
-//                index.setSerialPort();
-//                index.setMinMoisture();
-//                Thread t = new Thread() {
-//                    public void run() {
-//
-//                        index.startInfiniteLoop();
-//
-////                        index.createLog();
-//                    }
-//                };
-//                t.start();
+                
                 DialogBox.main("Your farm has been registered");
                 System.out.println("Your farm has been registered");
             } else {
@@ -318,7 +307,7 @@ public class Farm_Registeration extends javax.swing.JFrame {
 
     private void jTextField2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField2FocusLost
         // TODO add your handling code here:
-        String add2 = jTextArea1.getText();
+        String add2 = jTextField2.getText();
         String numbers = "(.*[0-9].*)";
         String alphabets = "(.*[A-Z][a-z].*)";
         if (!add2.matches(numbers)) {
@@ -331,7 +320,7 @@ public class Farm_Registeration extends javax.swing.JFrame {
 
     private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
         // TODO add your handling code here:
-        String add3 = jTextArea1.getText();
+        String add3 = jTextField1.getText();
         String numbers = "(.*[0-9].*)";
         if (add3.matches(numbers)) {
             jLabel10.setText(" ");

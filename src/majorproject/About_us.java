@@ -5,6 +5,8 @@
  */
 package majorproject;
 
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author User
@@ -36,6 +38,8 @@ public class About_us extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBounds(new java.awt.Rectangle(500, 100, 0, 0));
+        setIconImage(new ImageIcon("G:\\smlogo.png").getImage());
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 102));
