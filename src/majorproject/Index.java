@@ -8,6 +8,7 @@ package majorproject;
 import Connection.conn;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -496,7 +497,7 @@ public class Index extends javax.swing.JFrame {
 
     private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
         // TODO add your handling code here:
-        
+
 //        createBarGraph();
     }//GEN-LAST:event_jTabbedPane1MouseClicked
 
@@ -649,8 +650,6 @@ public class Index extends javax.swing.JFrame {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
-
     private static class PortReader implements SerialPortEventListener {
 
         @Override
@@ -698,42 +697,49 @@ public class Index extends javax.swing.JFrame {
             int x = st.executeUpdate(query);
             closeConnection(con);
         } catch (Exception e) {
-            System.out.println("Problem in inserting in motor table :: "+e);
+            System.out.println("Problem in inserting in motor table :: " + e);
         }
     }
-    
+
     //create Bar graph for water requirement
-    void createBarGraph(){
+    void createBarGraph() {
         try {
             
-        DefaultCategoryDataset barchartdata = new DefaultCategoryDataset();
-        String query = "select * from records";
-        Connection con = connectToDatabase();
-        PreparedStatement ps = con.prepareStatement(query);
-        ResultSet rs =ps.executeQuery();
-        while(rs.next()){
-            barchartdata.setValue(rs.getInt("water_used"),"Water used",rs.getString("date"));
-        }
+                    
+            
+            DefaultCategoryDataset barchartdata = new DefaultCategoryDataset();
+            String query = "select * from records";
+            Connection con = connectToDatabase();
+            PreparedStatement ps = con.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                barchartdata.setValue(rs.getInt("water_used"), "Water used", rs.getString("date"));
+            }
 //        barchartdata.setValue(20000, "ABC", "Jan");
 //        barchartdata.setValue(20000, "ABC", "Feb");
 //        barchartdata.setValue(20000, "ABC", "Mar");
 //        barchartdata.setValue(20000, "ABC", "Apr");
-        
-        JFreeChart barchart = ChartFactory.createBarChart("WATER USAGE", "DATE", "LITRES", barchartdata, PlotOrientation.VERTICAL,false,true,false);
+
+            JFreeChart barchart = ChartFactory.createBarChart("WATER USAGE", "DATE", "LITRES", barchartdata, PlotOrientation.VERTICAL, false, true, false);
             CategoryPlot barchrt = barchart.getCategoryPlot();
             barchrt.setRangeGridlinePaint(Color.ORANGE);
-            ChartPanel barPanel = new ChartPanel(barchart);
+            ChartPanel barPanel = new ChartPanel(barchart){
+                @Override
+                public Dimension getPreferredSize() {
+                    return new Dimension(882, 578);
+                }
+            };
             jPanel1.setLayout(new BorderLayout());
             jPanel1.setBackground(Color.red);
             jPanel1.removeAll();
-            jPanel1.add(barPanel,BorderLayout.CENTER);
+            jPanel1.add(barPanel, BorderLayout.CENTER);
             jPanel1.validate();
             closeConnection(con);
         } catch (Exception e) {
-            System.out.println("Problem in creating bar chart:: "+e);
+            System.out.println("Problem in creating bar chart:: " + e);
         }
     }
-    
+
     //Read data for Eternity ;P
     void startInfiniteLoop() {
         try {
@@ -995,13 +1001,11 @@ public class Index extends javax.swing.JFrame {
             JDBCXYDataset jds = new JDBCXYDataset(con);
             jds.executeQuery(query);
             JFreeChart chart = ChartFactory.createTimeSeriesChart("Moisture Level", "Time", "Moisture", jds, true, true, false);
-            
-            XYPlot xyPlot = chart.getXYPlot();
-            ValueAxis rangeAxis = xyPlot.getRangeAxis(); 
-            rangeAxis.setRange(0, 100); 
-            
 
-     
+            XYPlot xyPlot = chart.getXYPlot();
+            ValueAxis rangeAxis = xyPlot.getRangeAxis();
+            rangeAxis.setRange(0, 100);
+
 // Generate the graph
 //            JFreeChart chart = ChartFactory.createXYLineChart(
 //                    "XY Chart", // Title
@@ -1014,7 +1018,7 @@ public class Index extends javax.swing.JFrame {
 //                    false // Configure chart to generate URLs?
 //            );
             ChartPanel CP = new ChartPanel(chart);
-            
+
             jPanel5.add(CP, BorderLayout.CENTER);
             jPanel5.validate();
 
@@ -1072,7 +1076,6 @@ public class Index extends javax.swing.JFrame {
 //
 //            }
 //        };
-
     }
 
     /**
