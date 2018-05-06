@@ -18,8 +18,12 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
-import javafx.scene.chart.NumberAxis;
+import javax.swing.JTextPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -27,12 +31,10 @@ import jssc.SerialPortException;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.jdbc.JDBCXYDataset;
 
@@ -79,8 +81,12 @@ public class Index extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
+        jTabbedPane4 = new javax.swing.JTabbedPane();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -135,9 +141,20 @@ public class Index extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel3.setText("Logs");
 
+        jTabbedPane2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTabbedPane2.addTab("Data", jTabbedPane4);
+
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane3.setViewportView(jTextArea1);
+
+        jTabbedPane2.addTab("Event", jScrollPane3);
+
+        jTextPane1.setEditable(false);
+        jTextPane1.setBackground(new java.awt.Color(204, 204, 204));
+        jScrollPane5.setViewportView(jTextPane1);
+
+        jTabbedPane2.addTab("Event", jScrollPane5);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -146,17 +163,17 @@ public class Index extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(73, 73, 73)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 907, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(64, Short.MAX_VALUE))
+                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 806, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addContainerGap(165, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(43, 43, 43)
+                .addGap(32, 32, 32)
                 .addComponent(jLabel3)
-                .addGap(39, 39, 39)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 541, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 573, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(113, Short.MAX_VALUE))
         );
 
@@ -457,7 +474,7 @@ public class Index extends javax.swing.JFrame {
                             .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(62, 62, 62)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -516,35 +533,62 @@ public class Index extends javax.swing.JFrame {
         contact_us.contactPage();
     }//GEN-LAST:event_jMenu7MouseClicked
 
+    //For Text Pane used in Logs : Event
+    public static void appendToPane(JTextPane tp, String msg, Color c)
+    {
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
+
+        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
+        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+
+        int len = tp.getDocument().getLength();
+        tp.setCaretPosition(len);
+        tp.setCharacterAttributes(aset, false);
+        tp.replaceSelection(msg);
+    }
+    
     //Connecting to Database
     Connection connectToDatabase() {
 //        System.out.println("Establishing Connection::");
+        appendToPane(jTextPane1, "Connecting to Database.. \n", Color.black);
         Connection con;
         try {
             con = conn.getCon();
         } catch (Exception e) {
             System.out.println("Connection can't be established");
             System.out.println("Error" + e);
+            appendToPane(jTextPane1, "Error occured while connecting to Database : "+e+"\n", Color.red);
             return null;
         }
+        appendToPane(jTextPane1, "Connection Esatablished.\n", Color.green);
         return con;
 
     }
 
     //Disconnect with Database
     private void closeConnection(Connection con) {
+        appendToPane(jTextPane1, "Closing Database Connection .\n", Color.black);
+        
         try {
             con.close();
+            
         } catch (SQLException e) {
-
+            appendToPane(jTextPane1, "Problem in Closing Connectiion.\n", Color.red);
+        
         }
+        appendToPane(jTextPane1, "Connection Closed Succesfully.\n", Color.green);
+        
     }
 
     //Insert moisture valve in moisture table 
     void insertIntoMoisture(Connection con, String s) {
         try {
             System.out.println("Performing moisture database insertion:: value:: " + s);
+            appendToPane(jTextPane1, "Performing moisture database insertion.\n", Color.black);
+        
             String query = "insert into moisture(m_value) values(" + s + ")";
+            
             Statement st = con.createStatement();
 
 //            System.out.println("Statement created");
@@ -559,14 +603,16 @@ public class Index extends javax.swing.JFrame {
 
         } catch (SQLException e) {
             System.out.println("Problem in Inserting moisture value in database:: " + e);
-
+            appendToPane(jTextPane1, "Problem in Inserting moisture value in database", Color.red);
         }
+        appendToPane(jTextPane1, "Insertion done successfully.", Color.green);
         closeConnection(con);
     }
 
     void updateInValve(Connection con, String s) {
         try {
             System.out.println("Performing valve database insertion:: value=> " + s);
+            appendToPane(jTextPane1, "Performing moisture database Updation.\n", Color.black);
             String query = "UPDATE valve SET v_status='" + s + "' WHERE v_id = 1";
             Statement st = con.createStatement();
 
@@ -581,9 +627,11 @@ public class Index extends javax.swing.JFrame {
             }
 
         } catch (SQLException e) {
-            System.out.println("Problem in Inserting valve value in database:: " + e);
+            System.out.println(":: " + e);
+            appendToPane(jTextPane1, "Problem in updating data in the database.\n", Color.red);
 
         }
+        appendToPane(jTextPane1, "Updation Done successfully", Color.GREEN);
         closeConnection(con);
     }
 
@@ -621,7 +669,7 @@ public class Index extends javax.swing.JFrame {
 
     //set serial port
     boolean setSerialPort() {
-
+        appendToPane(jTextPane1,"Establishing Serial Communication...\n", Color.black);
         String portName = "COM3";
 
         // writing to port
@@ -640,9 +688,11 @@ public class Index extends javax.swing.JFrame {
             serialPort.addEventListener(new Index.PortReader(), SerialPort.MASK_RXCHAR);
         } catch (SerialPortException e) {
             System.out.println("Problem in connecting to the serial port:: " + e);
+            appendToPane(jTextPane1, "Problem in connecting to the serial port\n", Color.red);
             return false;
         }
         System.out.println("Serial Port Done");
+        appendToPane(jTextPane1, "Serial Communicatoin established\n", Color.green);
         return true;
     }
 
@@ -704,15 +754,13 @@ public class Index extends javax.swing.JFrame {
     //create Bar graph for water requirement
     void createBarGraph() {
         try {
-            
-                    
-            
+            appendToPane(jTextPane1, "Generating Water Usage Chart...", Color.black);
             DefaultCategoryDataset barchartdata = new DefaultCategoryDataset();
             String query = "select * from records";
             Connection con = connectToDatabase();
             PreparedStatement ps = con.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
+            while (rs.next()) { 
                 barchartdata.setValue(rs.getInt("water_used"), "Water used", rs.getString("date"));
             }
 //        barchartdata.setValue(20000, "ABC", "Jan");
@@ -737,7 +785,9 @@ public class Index extends javax.swing.JFrame {
             closeConnection(con);
         } catch (Exception e) {
             System.out.println("Problem in creating bar chart:: " + e);
+            appendToPane(jTextPane1, "Problem in generating Water Usage chart\n", Color.red);
         }
+        appendToPane(jTextPane1,"Water Usage chart is generated successfully\n", Color.green);
     }
 
     //Read data for Eternity ;P
@@ -749,6 +799,7 @@ public class Index extends javax.swing.JFrame {
                 @Override
                 public void run() {
                     try {
+                        appendToPane(jTextPane1,"Running New Thread\n", Color.blue);
                         System.out.println("Inside Thread run");
                         int waterReq = Integer.parseInt(plantWaterReq);
                         System.out.println("Water requirement is : " + waterReq);
@@ -866,6 +917,7 @@ public class Index extends javax.swing.JFrame {
                         }
                     } catch (Exception e) {
                         System.out.println("Start Error in run Thread Start Infinite Loop :: " + e);
+                        appendToPane(jTextPane1, "Problem in Thread\n", Color.red);
                     }
                 }
             };
@@ -881,6 +933,7 @@ public class Index extends javax.swing.JFrame {
     //Insert into Sensor table
     private void showSensorTable() {
         try {
+            appendToPane(jTextPane1, "Updating Sensor Table..", Color.black);
             String s_select = "select time,m_value from moisture order by moisture.time DESC LIMIT 6";
             Connection con = connectToDatabase();
             PreparedStatement ps = con.prepareStatement(s_select);
@@ -911,9 +964,9 @@ public class Index extends javax.swing.JFrame {
             closeConnection(con);
         } catch (Exception e) {
             System.out.println("Shpw table error ::" + e);
-
+            appendToPane(jTextPane1, "Error in Sensor table", Color.red);
         }
-
+        appendToPane(jTextPane1,"Sensor table Updated successfully\n", Color.green);
     }
 
     //empty Table
@@ -928,6 +981,7 @@ public class Index extends javax.swing.JFrame {
     //setProgress Bar to avg mositure sensor rating
     private void setProgressBar() {
         try {
+            appendToPane(jTextPane1,"Setting up the progress bar\n", Color.black);
             Connection con = connectToDatabase();
             String s_progressBar = "select avg(m_value) from moisture";
             Statement st_pb = con.createStatement();
@@ -954,12 +1008,14 @@ public class Index extends javax.swing.JFrame {
 
     //readMoistureData
     int readMoisture() {
+        appendToPane(jTextPane1,"\nReading moisture value from Arduino\n", Color.black);
         System.out.println("Reading Moisture");
         sendMessage("readM");
         String moisture = null;
         while (moisture == null) {
             moisture = receiveMessage();
         }
+        appendToPane(jTextPane1,"Moisture value read.\n", Color.green);
         int moistureLevel = Integer.parseInt(moisture);
         return moistureLevel;
 
@@ -968,6 +1024,7 @@ public class Index extends javax.swing.JFrame {
     //change valve state
     void changeValveState(String state) {
         System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$Change Valve State: Sending Message");
+        appendToPane(jTextPane1, "\nChanging Valve Status..\n", Color.black);
         sendMessage("cvs");
         sendMessage(state);
 //        String moisture = null;
@@ -1241,9 +1298,13 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JTabbedPane jTabbedPane4;
     private javax.swing.JTable jTable1;
     private static javax.swing.JTable jTable2;
     private javax.swing.JTextArea jTextArea1;
+    public javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
 }

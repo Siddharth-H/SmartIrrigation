@@ -165,7 +165,7 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Passoword is incorrect.");
 
         } else if (loginSt == -1) {
-            JOptionPane.showMessageDialog(rootPane, "EmailId not registered");
+            JOptionPane.showMessageDialog(rootPane, "Email Id not registered"+" EmailID = "+emailId+", Pass = "+password);
 
         } else {
             JOptionPane.showMessageDialog(rootPane, "Error occured.");
@@ -223,7 +223,7 @@ public class Login extends javax.swing.JFrame {
     public static int loginUser(String emailId, String password) {
         Connection con = conn.getCon();
         String passStored;
-        String sql = "Select userid, name, password, phonenumber, address from users where email = \"" + emailId + "\"";
+        String sql = "select userid, name, password, phonenumber, address from users where email = '" + emailId + "';";
         System.out.println(sql);
         int st = -1;
         PreparedStatement preparedStatement;

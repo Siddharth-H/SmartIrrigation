@@ -18,10 +18,10 @@ public class conn {
             try{
                 System.out.println("Before Connection");
                 Class.forName("com.mysql.jdbc.Driver");
-             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/abc?zeroDateTimeBehavior=convertToNull","root","");
+             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/major_3?zeroDateTimeBehavior=convertToNull","root","");
                 System.out.println("After Connection");
         }catch(Exception e){
-            System.out.println(e+"ABC");
+            System.out.println("Database Connectivity Exception: "+e);
                 System.out.println("Not connected");
         }
         return con;
